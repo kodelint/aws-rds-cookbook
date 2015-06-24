@@ -84,7 +84,7 @@ module Overclock
         rescue LoadError
           Chef::Log.error("Missing gem 'aws-sdk'. Use the default aws-rds recipe to install it first.")
         end
-        @rds ||= Aws::RDS.new(access_key_id: key, secret_access_key: secret, region: region)
+        @rds ||= Aws::RDS::Client.new(access_key_id: key, secret_access_key: secret, region: region)
       end
 
       def create_instance(id = new_resource.id)
