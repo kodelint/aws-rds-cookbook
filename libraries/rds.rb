@@ -22,134 +22,145 @@
 
 require 'date'
 
+# Overclock module
 module Overclock
-  module Aws
-    module RDS
-      SERIALIZE_ATTRS = [
-        :allocated_storage            ,
-        :auto_minor_version_upgrade   ,
-        :availability_zone            ,
-        :backup_retention_period      ,
-        :character_set_name           ,
-        :db_instance_class            ,
-        :db_instance_identifier       ,
-        :db_name                      ,
-        :db_parameter_group_name      ,
-        :db_subnet_group_name         ,
-        :db_security_groups           ,
-        :db_subnet_group_name         ,
-        :engine                       ,
-        :engine_version               ,
-        :iops                         ,
-        :license_model                ,
-        :master_user_password         ,
-        :master_username              ,
-        :multi_az                     ,
-        :option_group_name            ,
-        :port                         ,
-        :preferred_backup_window      ,
-        :preferred_maintenance_window ,
-        :publicly_accessible          ,
-        :storage_type                 ,
-        :tags                         ,
-        :vpc_security_group_ids
-      ]
+end
 
-      DESERIALIZE_ATTRS = [
-        :allocated_storage            ,
-        :auto_minor_version_upgrade   ,
-        :backup_retention_period      ,
-        :character_set_name           ,
-        :db_instance_class            ,
-        :db_instance_identifier       ,
-        :db_name                      ,
-        :engine                       ,
-        :engine_version               ,
-        :iops                         ,
-        :license_model                ,
-        :master_username              ,
-        :multi_az                     ,
-        :preferred_backup_window      ,
-        :preferred_maintenance_window ,
-        :endpoint_address
-      ]
+module Overclock::Aws
+	# RDS module
+	module RDS
+		SERIALIZE_ATTRS = [
+			:allocated_storage,
+			:auto_minor_version_upgrade,
+			:availability_zone,
+			:backup_retention_period,
+			:character_set_name,
+			:db_instance_class,
+			:db_instance_identifier,
+			:db_name,
+			:db_parameter_group_name,
+			:db_subnet_group_name,
+			:db_security_groups,
+			:db_subnet_group_name,
+			:engine,
+			:engine_version,
+			:iops,
+			:license_model,
+			:master_user_password,
+			:master_username,
+			:multi_az,
+			:option_group_name,
+			:port,
+			:preferred_backup_window,
+			:preferred_maintenance_window,
+			:publicly_accessible,
+			:storage_type,
+			:tags,
+			:vpc_security_group_ids
+		]
 
-      def instance(id = new_resource.id)
-        @instance ||= rds.db_instances[id]
-      end
+		DESERIALIZE_ATTRS = [
+			:allocated_storage,
+			:auto_minor_version_upgrade,
+			:backup_retention_period,
+			:character_set_name,
+			:db_instance_class,
+			:db_instance_identifier,
+			:db_name,
+			:engine,
+			:engine_version,
+			:iops,
+			:license_model,
+			:master_username,
+			:multi_az,
+			:preferred_backup_window,
+			:preferred_maintenance_window,
+			:endpoint_address
+		]
 
-      def rds(key = new_resource.aws_access_key, secret = new_resource.aws_secret_access_key)
-        begin
-          require 'aws-sdk-v1'
-        rescue LoadError
-          Chef::Log.error("Missing gem 'aws-sdk'. Use the default aws-rds recipe to install it first.")
-        end
-        @rds ||= AWS::RDS.new(access_key_id: key, secret_access_key: secret, region: region)
-      end
+		def instance(id = new_resource.id)
+			@instance ||= rds.db_instances[id]
+		end
 
-      def create_instance(id = new_resource.id)
-        if @instance = rds.db_instances.create(id, serialize_attrs)
-          while (instance.status != 'available') do
-            sleep 1
-          end
-        end
-      end
+		def rds(key = new_resource.aws_access_key, secret = new_resource.aws_secret_access_key)
+			begin
+				require 'aws-sdk-v1'
+			rescue LoadError
+				Chef::Log.error("Missing gem 'aws-sdk'. Use the default aws-rds recipe to install it first.")
+			end
+			@rds ||= AWS::RDS.new(access_key_id: key, secret_access_key: secret, region: region)
+		end
 
-      def delete_instance(id = new_resource.id, skip_final_snapshot = new_resource.skip_final_snapshot)
-        @instance ||= rds.db_instances[id]
-        if @instance
-          if skip_final_snapshot
-            options = {
-              skip_final_snapshot: true
-            }
-          else
-            time = Time.now.to_s
-            theDate = DateTime.parse(time).strftime("%Y%m%d-%H%M")
-            options = {
-              skip_final_snapshot: false,
-              final_db_snapshot_identifier: "#{new_resource.id}-#{theDate}"
-            }
-          end
-          @instance.delete(options=options)
-        end
-      end
+		def create_instance(id)
+			if @instance = rds.db_instances.create(id, serialize_attrs)
+				sleep 1 while (instance.status != 'available')
+			end
+		end
 
-      def update_instance(id = new_resource.id)
-        # placeholder for update instance
-      end
+		def create_read_replica(id, source_db_id)
+			options = serialize_attrs.delete_if { |_k, v| v.nil? }
+			options[:db_instance_identifier] = id
+			options[:source_db_instance_identifier] = source_db_id
+			Chef::Log.info("options = #{options}")
+			if @instance = rds.client.create_db_instance_read_replica(options)
+				sleep 1 while (instance.status != 'available')
+			end
+		end
 
-      def set_node_attrs
-        node.override[:aws_rds][new_resource.id] = deserialize_attrs
-      end
+		def delete_instance(id, skip_final_snapshot)
+			@instance ||= rds.db_instances[id]
+			if @instance
+				if skip_final_snapshot
+					options = {
+						skip_final_snapshot: true
+					}
+				else
+					time = Time.now.to_s
+					date = DateTime.parse(time).strftime('%Y%m%d-%H%M')
+					options = {
+						skip_final_snapshot: false,
+						final_db_snapshot_identifier: "#{new_resource.id}-#{date}"
+					}
+				end
+				@instance.delete(options)
+			end
+		end
 
-      def region
-        new_resource.region || determine_region
-      end
+		def update_instance(*)
+		  # placeholder for update instance
+		end
 
-      private
+		def set_node_attrs
+			node.override[:aws_rds][new_resource.id] = deserialize_attrs
+		end
 
-      # Determine the current region or fail gracefully
-      def determine_region
-        `curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone | grep -Po "(us|sa|eu|ap)-(north|south)?(east|west)?-[0-9]+"`.strip
-      rescue
-        new_resource.region
-      end
+		def region
+			new_resource.region || determine_region
+		end
 
-      def serialize_attrs
-        SERIALIZE_ATTRS.inject({}) do | result, key |
-          if value = new_resource.send(key)
-            result[key] = value
-          end
-          result
-        end
-      end
+   private
 
-      def deserialize_attrs
-        DESERIALIZE_ATTRS.inject({}) do |result, attr|
-          result[attr] = instance.send(attr)
-          result
-        end
-      end
-    end
-  end
+		# Determine the current region or fail gracefully
+		def determine_region
+			`curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone | grep -Po "(us|sa|eu|ap)-(north|south)?(east|west)?-[0-9]+"`.strip
+		rescue
+			new_resource.region
+		end
+
+		def serialize_attrs
+			SERIALIZE_ATTRS.inject({}) do | result, key |
+				if value = new_resource.send(key)
+					result[key] = value
+				end
+				result
+			end
+		end
+
+		def deserialize_attrs
+			DESERIALIZE_ATTRS.inject({}) do |result, attr|
+				result[attr] = instance.send(attr)
+				result
+			end
+		end
+	end
 end
