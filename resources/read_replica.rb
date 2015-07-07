@@ -14,7 +14,7 @@ attribute :db_instance_identifier, kind_of: String
 attribute :db_name, kind_of: NilClass, default: nil
 attribute :db_parameter_group_name, kind_of: NilClass, default: nil
 attribute :db_security_groups, kind_of: NilClass, default: nil
-attribute :db_subnet_group_name, kind_of: String
+attribute :db_subnet_group_name, kind_of: NilClass, default: nil
 attribute :engine, kind_of: NilClass, default: nil
 attribute :engine_version, kind_of: NilClass, default: nil
 attribute :iops, kind_of: Integer
