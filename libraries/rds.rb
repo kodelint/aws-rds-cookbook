@@ -93,7 +93,7 @@ module Overclock::Aws
 
 		def create_instance(id)
 			if @instance = rds.db_instances.create(id, serialize_attrs)
-				sleep 1 while (instance.status != 'available')
+				sleep 5 while (instance.status != 'available')
 			end
 		end
 
@@ -101,9 +101,9 @@ module Overclock::Aws
 			options = serialize_attrs.delete_if { |_k, v| v.nil? }
 			options[:db_instance_identifier] = id
 			options[:source_db_instance_identifier] = source_db_id
-			Chef::Log.info("options = #{options}")
-			if @instance = rds.client.create_db_instance_read_replica(options)
-				sleep 1 while (instance.status != 'available')
+			rds.client.create_db_instance_read_replica(options)
+			unless (instance.status == 'available')
+				sleep 5
 			end
 		end
 
