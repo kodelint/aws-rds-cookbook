@@ -7,7 +7,7 @@ attribute :aws_secret_access_key, kind_of: String
 attribute :allocated_storage, kind_of: NilClass, default: nil
 attribute :auto_minor_version_upgrade, kind_of: [TrueClass, FalseClass], default: true
 attribute :availability_zone, kind_of: String
-attribute :backup_retention_period, kind_of: Integer
+attribute :backup_retention_period, kind_of: NilClass, default: nil
 attribute :character_set_name, kind_of: NilClass, default: nil
 attribute :db_instance_class, kind_of: String, required: true
 attribute :db_instance_identifier, kind_of: String
