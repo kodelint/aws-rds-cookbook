@@ -38,4 +38,4 @@ attribute :engine, kind_of: NilClass, default: nil
 attribute :license_model, kind_of: NilClass, default: nil
 attribute :master_username, kind_of: NilClass, default: nil
 attribute :skip_final_snapshot, kind_of: NilClass, default: nil
-attribute :snapshot_id, kind_of: NilClass default: nil
+attribute :snapshot_id, kind_of: NilClass, default: nil

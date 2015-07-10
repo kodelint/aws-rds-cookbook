@@ -36,5 +36,5 @@ attribute :multi_az, kind_of: NilClass, default: nil
 attribute :preferred_backup_window, kind_of: NilClass, default: nil
 attribute :preferred_maintenance_window, kind_of: NilClass, default: nil
 attribute :skip_final_snapshot, kind_of: NilClass, default: nil
-attribute :snapshot_id, kind_of: NilClass default: nil
+attribute :snapshot_id, kind_of: NilClass, default: nil
 attribute :vpc_security_group_ids, kind_of: NilClass, default: nil
