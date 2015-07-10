@@ -56,6 +56,8 @@ module Overclock::Aws
 			:publicly_accessible,
 			:storage_type,
 			:tags,
+			:tde_credential_arn,
+			:tde_credential_password,
 			:vpc_security_group_ids
 		]
 
@@ -107,6 +109,15 @@ module Overclock::Aws
 			end
 		end
 
+		def modify_db_instance(id)
+			options = serialize_attrs.delete_if { |_k, v| v.nil? }
+			options[:db_instance_identifier] = id
+			rds.client.modify_db_instance(options)
+			unless (instance.status == 'available')
+				sleep 5
+			end
+		end
+
 		def delete_instance(id, skip_final_snapshot)
 			@instance ||= rds.db_instances[id]
 			if @instance
@@ -124,10 +135,6 @@ module Overclock::Aws
 				end
 				@instance.delete(options)
 			end
-		end
-
-		def update_instance(*)
-		  # placeholder for update instance
 		end
 
 		def set_node_attrs

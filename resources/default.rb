@@ -32,6 +32,8 @@ attribute :skip_final_snapshot, kind_of: [TrueClass, FalseClass], default: false
 attribute :snapshot_id, kind_of: [String, NilClass], default: nil
 attribute :storage_type, kind_of: String, default: 'gp2'
 attribute :tags, kind_of: Array
+attribute :tde_credential_arn, kind_of: [String, NilClass], default: nil
+attribute :tde_credential_password, kind_of: [String, NilClass], default: nil
 attribute :vpc_security_group_ids, kind_of: Array
 
 attr_accessor :exists
