@@ -30,13 +30,14 @@ attr_accessor :exists
 
 # UNUSED ATTRIBUTES FOR INSTANCE MODIFICATIONS. DO NOT MODIFY OR SET IN RECIPE. NECESSARY FOR COMPATIBILITY WITH Overclock::Aws::RDS#serialize_attrs.
 
-attribute :db_subnet_group_name, kind_of: [String, NilClass], default: nil
+attribute :availability_zone, kind_of: NilClass, default: nil
+attribute :db_subnet_group_name, kind_of: NilClass, default: nil
 attribute :character_set_name, kind_of: NilClass, default: nil
 attribute :db_name, kind_of: NilClass, default: nil
 attribute :db_subnet_group_name, kind_of: NilClass, default: nil
 attribute :engine, kind_of: NilClass, default: nil
 attribute :license_model, kind_of: NilClass, default: nil
 attribute :master_username, kind_of: NilClass, default: nil
-attribute :region, kind_of: [String, NilClass], default: nil
+attribute :region, kind_of: NilClass, default: nil
 attribute :skip_final_snapshot, kind_of: NilClass, default: nil
 attribute :snapshot_id, kind_of: NilClass, default: nil
