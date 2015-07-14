@@ -38,4 +38,6 @@ attribute :preferred_maintenance_window, kind_of: NilClass, default: nil
 attribute :region, kind_of: [String, NilClass], default: nil
 attribute :skip_final_snapshot, kind_of: NilClass, default: nil
 attribute :snapshot_id, kind_of: NilClass, default: nil
+attribute :tde_credential_arn, kind_of: NilClass, default: nil
+attribute :tde_credential_password, kind_of: NilClass, default: nil
 attribute :vpc_security_group_ids, kind_of: NilClass, default: nil
