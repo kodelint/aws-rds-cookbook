@@ -105,17 +105,19 @@ module Overclock::Aws
 			options[:source_db_instance_identifier] = source_db_id
 			rds.client.create_db_instance_read_replica(options)
 			unless (instance.status == 'available')
-				sleep 5
+				sleep 5 while (instance.status != 'available')
 			end
 		end
 
 		def modify_db_instance(id)
 			options = serialize_attrs.delete_if { |_k, v| v.nil? }
 			options[:db_instance_identifier] = id
-			rds.client.modify_db_instance(options)
 			unless (instance.status == 'available')
-				sleep 5
+				Chef::Log.warn("RDS instance to be modified is not in 'available' state. Retrying at 5 second intervals...")
+				Chef::Log.warn("instance.status = #{instance.status}")
+				sleep 5 while (instance.status != 'available')
 			end
+			rds.client.modify_db_instance(options)
 		end
 
 		def delete_instance(id, skip_final_snapshot)
