@@ -112,6 +112,7 @@ module Overclock::Aws
 		def modify_db_instance(id)
 			options = serialize_attrs.delete_if { |_k, v| v.nil? }
 			options[:db_instance_identifier] = id
+			options[:apply_immediately] = new_resource.apply_immediately
 			unless (instance.status == 'available')
 				Chef::Log.warn("RDS instance to be modified is not in 'available' state. Retrying at 5 second intervals...")
 				Chef::Log.warn("instance.status = #{instance.status}")
