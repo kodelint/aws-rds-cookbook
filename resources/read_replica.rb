@@ -8,6 +8,7 @@ attribute :auto_minor_version_upgrade, kind_of: [TrueClass, FalseClass], default
 attribute :availability_zone, kind_of: String
 attribute :db_instance_class, kind_of: String, required: true
 attribute :db_instance_identifier, kind_of: String
+attribute :db_parameter_group_name, kind_of: String
 attribute :iops, kind_of: Integer
 attribute :option_group_name, kind_of: String
 attribute :port, kind_of: Integer
