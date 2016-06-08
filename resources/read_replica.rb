@@ -25,7 +25,6 @@ attribute :allocated_storage, kind_of: NilClass, default: nil
 attribute :backup_retention_period, kind_of: NilClass, default: nil
 attribute :character_set_name, kind_of: NilClass, default: nil
 attribute :db_name, kind_of: NilClass, default: nil
-attribute :db_parameter_group_name, kind_of: NilClass, default: nil
 attribute :db_security_groups, kind_of: NilClass, default: nil
 attribute :db_subnet_group_name, kind_of: NilClass, default: nil
 attribute :engine, kind_of: NilClass, default: nil
