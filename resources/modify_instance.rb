@@ -1,7 +1,7 @@
 actions [:modify]
 default_action :create
 
-attribute :id, kind_of: [String, NilClass], default: nil, name_attribute: true
+attribute :id, kind_of: [String, NilClass], name_attribute: true
 attribute :aws_access_key, kind_of: [String, NilClass], default: nil
 attribute :aws_secret_access_key, kind_of: [String, NilClass], default: nil
 attribute :allocated_storage, kind_of: [Integer, NilClass], default: nil
