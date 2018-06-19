@@ -90,7 +90,7 @@ module Overclock::Aws
 			rescue Exception => e
 				Chef::Log.error("#{e}")
 			end
-			@rds ||= AWS::RDS.new(access_key_id: key, secret_access_key: secret, region: region)
+			@rds ||= ::AWS::RDS.new(access_key_id: key, secret_access_key: secret, region: region)
 		end
 
 		def create_instance(id)
