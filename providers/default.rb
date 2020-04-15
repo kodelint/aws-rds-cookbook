@@ -36,6 +36,6 @@ action :delete do
 end
 
 def load_current_resource
-    @current_resource = Chef::Resource::rds.new(new_resource.id)
+    @current_resource = Chef::Resource::Overclock::Aws::RDS::rds.new(new_resource.id)
     @current_resource.exists = instance.exists?
 end
