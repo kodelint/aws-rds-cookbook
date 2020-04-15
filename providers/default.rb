@@ -36,6 +36,6 @@ action :delete do
 end
 
 def load_current_resource
-    @current_resource = Aws::RDS::Resource.new(new_resource.id)
+    @current_resource = Chef::Resource::rds.new(new_resource.id)
     @current_resource.exists = instance.exists?
 end
