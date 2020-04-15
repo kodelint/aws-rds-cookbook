@@ -8,8 +8,7 @@ version '1.6.4'
 recipe 'aws-rds', 'installs the aws-sdk gem during compile time'
 attribute 'aws_sdk_version', description: 'aws-sdk gem version', type: 'string'
 
-depends 'build-essential'
 supports 'ubuntu'
 supports 'debian'
 
-gem 'aws-sdk-v1'
+gem 'aws-sdk', '~> 3'
