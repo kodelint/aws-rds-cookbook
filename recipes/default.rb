@@ -28,3 +28,7 @@ execute "apt-get update" do
   ignore_failure true
   action :nothing
 end.run_action(:run) if node['platform_family'] == "debian"
+
+package 'gcc' do
+  action :install
+end
